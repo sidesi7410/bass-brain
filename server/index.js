@@ -36,6 +36,6 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Bass Brain server running on port ${PORT}`);
 });
