@@ -26,18 +26,24 @@ app.use("/api/recommend", recommendRoutes);
 app.use("/api/lures", lureRoutes);
 app.use("/api/spots", spotRoutes);
 
-// Serve client build in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(__dirname, "../client/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
-  });
+// Serve client build if dist exists
+import fs from "fs";
+const distPath = path.resolve(__dirname, "../client/dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
 }
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 app.use(errorHandler);
+
+// SPA fallback — serve index.html for non-API routes
+if (fs.existsSync(distPath)) {
+  app.use((req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
+  });
+}
 
 app.listen(PORT, "0.0.0.0", async () => {
   const distPath = path.resolve(__dirname, "../client/dist");

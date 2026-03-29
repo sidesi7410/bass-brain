@@ -2,7 +2,7 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "rm -f package-lock.json && find node_modules -maxdepth 1 -not -name node_modules -not -name .cache -exec rm -rf {} + 2>/dev/null; npm install && npm run build"
+    "buildCommand": "NODE_ENV=development npm install && npm run build"
   },
   "deploy": {
     "startCommand": "npm start",
