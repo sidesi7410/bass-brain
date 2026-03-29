@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -29,11 +29,14 @@ const osmIcon = new L.DivIcon({
 });
 
 function MapEvents({ onMoveEnd }) {
+  const callbackRef = useRef(onMoveEnd);
+  callbackRef.current = onMoveEnd;
+
   useMapEvents({
     moveend: (e) => {
       const map = e.target;
       const center = map.getCenter();
-      onMoveEnd(center.lat, center.lng, map.getZoom());
+      callbackRef.current(center.lat, center.lng, map.getZoom());
     },
   });
   return null;
@@ -52,6 +55,51 @@ function FlyToLocation({ center }) {
 
   return null;
 }
+
+const CuratedMarkers = memo(function CuratedMarkers({ spots, onGetLurePicks }) {
+  return spots.map((spot) => (
+    <Marker key={spot.id} position={[spot.lat, spot.lon]} icon={curatedIcon}>
+      <Popup className="spot-popup" maxWidth={300}>
+        <div className="popup-content">
+          <h3>{spot.name}</h3>
+          <span className="popup-badge">{spot.type} — {spot.state}</span>
+          <p className="popup-species">
+            <strong>Species:</strong> {spot.species.join(", ")}
+          </p>
+          <p className="popup-notes">{spot.notes}</p>
+          {spot.distance !== undefined && (
+            <p className="popup-distance">{spot.distance} miles away</p>
+          )}
+          <button
+            className="popup-btn"
+            onClick={() => onGetLurePicks(spot.lat, spot.lon, spot.name)}
+          >
+            Get Lure Picks
+          </button>
+        </div>
+      </Popup>
+    </Marker>
+  ));
+});
+
+const WaterMarkers = memo(function WaterMarkers({ features, onGetLurePicks }) {
+  return features.map((feature) => (
+    <Marker key={feature.id} position={[feature.lat, feature.lon]} icon={osmIcon}>
+      <Popup className="spot-popup" maxWidth={280}>
+        <div className="popup-content">
+          <h3>{feature.name}</h3>
+          <span className="popup-badge osm-badge">{feature.type}</span>
+          <button
+            className="popup-btn"
+            onClick={() => onGetLurePicks(feature.lat, feature.lon, feature.name)}
+          >
+            Get Lure Picks
+          </button>
+        </div>
+      </Popup>
+    </Marker>
+  ));
+});
 
 export default function FishingMap({
   curatedSpots,
@@ -78,47 +126,10 @@ export default function FishingMap({
       {flyTo && <FlyToLocation center={flyTo} />}
 
       {/* Curated fishing spots */}
-      {curatedSpots.map((spot) => (
-        <Marker key={spot.id} position={[spot.lat, spot.lon]} icon={curatedIcon}>
-          <Popup className="spot-popup" maxWidth={300}>
-            <div className="popup-content">
-              <h3>{spot.name}</h3>
-              <span className="popup-badge">{spot.type} — {spot.state}</span>
-              <p className="popup-species">
-                <strong>Species:</strong> {spot.species.join(", ")}
-              </p>
-              <p className="popup-notes">{spot.notes}</p>
-              {spot.distance !== undefined && (
-                <p className="popup-distance">{spot.distance} miles away</p>
-              )}
-              <button
-                className="popup-btn"
-                onClick={() => onGetLurePicks(spot.lat, spot.lon, spot.name)}
-              >
-                Get Lure Picks
-              </button>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      <CuratedMarkers spots={curatedSpots} onGetLurePicks={onGetLurePicks} />
 
       {/* OSM water features */}
-      {waterFeatures.map((feature) => (
-        <Marker key={feature.id} position={[feature.lat, feature.lon]} icon={osmIcon}>
-          <Popup className="spot-popup" maxWidth={280}>
-            <div className="popup-content">
-              <h3>{feature.name}</h3>
-              <span className="popup-badge osm-badge">{feature.type}</span>
-              <button
-                className="popup-btn"
-                onClick={() => onGetLurePicks(feature.lat, feature.lon, feature.name)}
-              >
-                Get Lure Picks
-              </button>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      <WaterMarkers features={waterFeatures} onGetLurePicks={onGetLurePicks} />
     </MapContainer>
   );
 }
