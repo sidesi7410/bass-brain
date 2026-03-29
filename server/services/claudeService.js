@@ -7,7 +7,7 @@ function getClient() {
   return client;
 }
 const MODEL = "claude-haiku-4-5-20251001";
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 1500;
 
 // Simple in-memory cache (30 min TTL)
 const cache = new Map();
@@ -128,23 +128,24 @@ export async function getRecommendations(weatherData) {
     throw Object.assign(new Error("Failed to get AI recommendations: " + err.message), { status: 502 });
   }
 
-  // Parse JSON response
+  // Parse JSON response — strip markdown fences if present
+  function extractJson(text) {
+    // Remove markdown code fences
+    let cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+    // Try to find JSON object in the text
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+    if (start !== -1 && end !== -1) {
+      cleaned = cleaned.slice(start, end + 1);
+    }
+    return JSON.parse(cleaned);
+  }
+
   let parsed;
   try {
-    parsed = JSON.parse(responseText);
+    parsed = extractJson(responseText);
   } catch {
-    // Retry once asking Claude to fix its JSON
-    try {
-      const retry = await getClient().messages.create({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: "Fix the following text to be valid JSON. Return ONLY the corrected JSON, nothing else.",
-        messages: [{ role: "user", content: responseText }]
-      });
-      parsed = JSON.parse(retry.content[0].text);
-    } catch {
-      throw Object.assign(new Error("Failed to parse AI recommendation response"), { status: 502 });
-    }
+    throw Object.assign(new Error("Failed to parse AI recommendation response"), { status: 502 });
   }
 
   const result = {
