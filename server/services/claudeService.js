@@ -6,8 +6,8 @@ function getClient() {
   if (!client) client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   return client;
 }
-const MODEL = "claude-sonnet-4-6";
-const MAX_TOKENS = 1500;
+const MODEL = "claude-haiku-4-5-20251001";
+const MAX_TOKENS = 1200;
 
 // Simple in-memory cache (30 min TTL)
 const cache = new Map();
@@ -26,17 +26,12 @@ function buildSystemPrompt() {
     lures.map(l => ({
       id: l.id,
       name: l.name,
-      brand: l.brand,
       category: l.category,
       type: l.type,
-      colors: l.colors,
       depthRange: l.depthRange,
       idealWaterTemp: l.idealWaterTemp,
-      bestConditions: l.bestConditions,
-      techniques: l.techniques
-    })),
-    null,
-    2
+      bestConditions: l.bestConditions
+    }))
   );
 
   return `You are Bass Brain, an expert bass fishing guide and lure specialist. You analyze weather and water conditions to recommend the best bass fishing lures.
