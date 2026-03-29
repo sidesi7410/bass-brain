@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs>
+    <style>
+      path, ellipse, circle { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <!-- Contour lines layer 1 -->
+  <ellipse cx="150" cy="200" rx="120" ry="80" stroke="#c8d6c0" stroke-width="1.2" opacity="0.6"/>
+  <ellipse cx="150" cy="200" rx="90" ry="60" stroke="#c8d6c0" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="150" cy="200" rx="55" ry="35" stroke="#c8d6c0" stroke-width="0.8" opacity="0.4"/>
+  <ellipse cx="155" cy="198" rx="25" ry="15" stroke="#c8d6c0" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- Contour lines layer 2 -->
+  <ellipse cx="420" cy="120" rx="140" ry="90" stroke="#c8d6c0" stroke-width="1.2" opacity="0.6"/>
+  <ellipse cx="425" cy="118" rx="105" ry="65" stroke="#c8d6c0" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="428" cy="116" rx="70" ry="42" stroke="#c8d6c0" stroke-width="0.8" opacity="0.4"/>
+  <ellipse cx="430" cy="115" rx="35" ry="20" stroke="#c8d6c0" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- Contour lines layer 3 -->
+  <path d="M30,400 Q100,340 200,360 Q300,380 350,430 Q400,480 500,450 Q560,430 600,440" stroke="#c8d6c0" stroke-width="1.2" opacity="0.6"/>
+  <path d="M30,420 Q100,370 200,385 Q300,400 350,445 Q400,490 500,465 Q560,448 600,458" stroke="#c8d6c0" stroke-width="1" opacity="0.5"/>
+  <path d="M30,440 Q100,400 200,410 Q300,420 350,458 Q400,498 500,478 Q560,464 600,474" stroke="#c8d6c0" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- Contour lines layer 4 - ridge -->
+  <path d="M0,550 Q80,500 160,520 Q240,540 320,510 Q400,480 480,505 Q560,530 600,515" stroke="#c8d6c0" stroke-width="1.2" opacity="0.55"/>
+  <path d="M0,570 Q80,525 160,542 Q240,560 320,535 Q400,508 480,528 Q560,548 600,536" stroke="#c8d6c0" stroke-width="1" opacity="0.45"/>
+
+  <!-- Contour cluster 5 -->
+  <ellipse cx="500" cy="320" rx="80" ry="100" stroke="#c8d6c0" stroke-width="1.2" opacity="0.55" transform="rotate(-15 500 320)"/>
+  <ellipse cx="502" cy="318" rx="55" ry="72" stroke="#c8d6c0" stroke-width="1" opacity="0.45" transform="rotate(-15 502 318)"/>
+  <ellipse cx="504" cy="316" rx="30" ry="44" stroke="#c8d6c0" stroke-width="0.8" opacity="0.38" transform="rotate(-15 504 316)"/>
+  <ellipse cx="505" cy="315" rx="12" ry="20" stroke="#c8d6c0" stroke-width="0.8" opacity="0.3" transform="rotate(-15 505 315)"/>
+
+  <!-- Small contour cluster 6 -->
+  <circle cx="80" cy="80" r="50" stroke="#c8d6c0" stroke-width="1" opacity="0.45"/>
+  <circle cx="82" cy="78" r="28" stroke="#c8d6c0" stroke-width="0.8" opacity="0.35"/>
+  <circle cx="83" cy="77" r="10" stroke="#c8d6c0" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- Contour lines layer 7 - valley -->
+  <path d="M250,0 Q270,60 260,120 Q250,180 275,240 Q300,300 280,340" stroke="#c8d6c0" stroke-width="1" opacity="0.45"/>
+  <path d="M270,0 Q288,60 280,120 Q272,180 295,240 Q318,300 300,340" stroke="#c8d6c0" stroke-width="0.8" opacity="0.38"/>
+
+  <!-- Water feature hints -->
+  <path d="M350,180 Q380,200 370,230 Q360,260 385,280" stroke="#b8d4e8" stroke-width="1.5" opacity="0.35" stroke-dasharray="8 4"/>
+  <path d="M100,480 Q140,500 180,495 Q220,490 250,505" stroke="#b8d4e8" stroke-width="1.5" opacity="0.35" stroke-dasharray="8 4"/>
+</svg>
