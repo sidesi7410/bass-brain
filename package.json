@@ -12,6 +12,9 @@
     "build": "npm run build -w client",
     "start": "node server/index.js"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "devDependencies": {
     "concurrently": "^9.0.1"
   }
