@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import express from "express";
 import cors from "cors";
@@ -14,10 +15,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT, 10) || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// Health check (before all other routes)
+app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 // API routes
 app.use("/api/weather", weatherRoutes);
@@ -27,32 +31,25 @@ app.use("/api/lures", lureRoutes);
 app.use("/api/spots", spotRoutes);
 
 // Serve client build if dist exists
-import fs from "fs";
 const distPath = path.resolve(__dirname, "../client/dist");
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 }
 
-// Health check
-app.get("/health", (req, res) => res.json({ status: "ok" }));
-
 app.use(errorHandler);
 
-// SPA fallback — serve index.html for non-API routes
+// SPA fallback
 if (fs.existsSync(distPath)) {
   app.use((req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
 
-app.listen(PORT, "0.0.0.0", async () => {
-  const distPath = path.resolve(__dirname, "../client/dist");
-  const fs = await import("fs");
-  console.log(`Bass Brain server running on port ${PORT}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`Serving static from: ${distPath}`);
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Bass Brain server running on http://0.0.0.0:${PORT}`);
   console.log(`dist exists: ${fs.existsSync(distPath)}`);
-  if (fs.existsSync(distPath)) {
-    console.log(`dist contents: ${fs.readdirSync(distPath).join(", ")}`);
-  }
+});
+
+server.on("error", (err) => {
+  console.error("Server error:", err);
 });
