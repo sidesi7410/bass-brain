@@ -34,8 +34,19 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// Health check
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+
 app.use(errorHandler);
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", async () => {
+  const distPath = path.resolve(__dirname, "../client/dist");
+  const fs = await import("fs");
   console.log(`Bass Brain server running on port ${PORT}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`Serving static from: ${distPath}`);
+  console.log(`dist exists: ${fs.existsSync(distPath)}`);
+  if (fs.existsSync(distPath)) {
+    console.log(`dist contents: ${fs.readdirSync(distPath).join(", ")}`);
+  }
 });
